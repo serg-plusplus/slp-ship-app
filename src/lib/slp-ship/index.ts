@@ -34,7 +34,7 @@ export async function toWSLP(
           from: bch.defaultAccount,
           value: "0.00001",
           opReturn: {
-            data: [slpTxId, ethDestAddress],
+            data: ["SLP_SHIP", slpTxId, ethDestAddress],
           },
         },
         (err: any, id: any) => {

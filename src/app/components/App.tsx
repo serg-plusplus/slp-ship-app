@@ -5,7 +5,7 @@ import { ReactQueryDevtools } from "react-query-devtools";
 import { UseWalletProvider } from "use-wallet";
 import { Toaster } from "react-hot-toast";
 import { UseBadgerProvider } from "lib/badger";
-import { ETH_CHAIN_ID, QUERY_CLIENT } from "app/defaults";
+import { ETH_CHAIN_ID, QUERY_CLIENT, FONTS } from "app/defaults";
 import ErrBond from "app/components/a11y/ErrBond";
 import WalletReconnect from "app/components/a11y/WalletReconnect";
 import AwaitFonts from "app/components/a11y/AwaitFonts";
@@ -19,7 +19,7 @@ const App: React.FC = () => (
           <>
             <ErrBond>
               <Suspense fallback={null}>
-                <AwaitFonts fonts={[]} />
+                <AwaitFonts fonts={FONTS} />
 
                 <PageRouter />
               </Suspense>

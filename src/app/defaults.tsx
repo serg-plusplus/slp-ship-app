@@ -21,3 +21,8 @@ export const QUERY_CLIENT = new QueryClient({
 });
 
 export const ETH_CHAIN_ID = +(process.env.REACT_APP_ETH_CHAIN_ID ?? 1);
+
+export const FONTS: [string, number[]][] = [
+  ["Courier Prime", [400]],
+  ["Noto Sans TC", [500, 700]],
+];
