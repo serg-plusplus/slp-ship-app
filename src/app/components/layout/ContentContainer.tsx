@@ -8,7 +8,7 @@ const ContentContainer: React.FC<ContentContainerProps> = ({
   ...rest
 }) => (
   <div
-    className={classNames("w-full max-w-xl mx-auto px-4", className)}
+    className={classNames("w-full max-w-6xl mx-auto px-4", className)}
     {...rest}
   >
     {children}

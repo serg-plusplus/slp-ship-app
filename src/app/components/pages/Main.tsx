@@ -1,116 +1,20 @@
-import { useCallback, useMemo, memo, useRef } from "react";
-import classNames from "clsx";
-import { useWallet } from "use-wallet";
+import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useBadger } from "lib/badger";
 import * as Repo from "app/repo";
-import PageLayout from "app/components/PageLayout";
+import PageLayout from "app/components/layout/PageLayout";
 
 const Main: React.FC = () => {
   return (
     <PageLayout>
       <div className="p-4">
-        <Connect />
+        <Content />
       </div>
     </PageLayout>
   );
 };
 
 export default Main;
-
-const Connect: React.FC = () => {
-  return (
-    <div className="flex flex-col">
-      <ConnetMetamask />
-      <ConnetBadger />
-    </div>
-  );
-};
-
-const ConnetMetamask = memo(() => {
-  const { connect, account } = useWallet();
-  const connectingRef = useRef(false);
-
-  const handleClick = useCallback(() => {
-    if (account) return;
-
-    if (connectingRef.current) return;
-    connectingRef.current = true;
-
-    const promise = connect("injected").finally(() => {
-      connectingRef.current = false;
-    });
-
-    toast.promise(promise, {
-      loading: "Connecting...",
-      success: () => "Connected!",
-      error: (err) => `Error when try to connect: ${err?.message ?? "unknown"}`,
-    });
-  }, [connect, account]);
-
-  return (
-    <button
-      className={classNames(
-        "mb-4 w-56",
-        "flex items-center py-2 px-4",
-        "capitalize tracking-wide bg-blue-600",
-        "dark:bg-gray-800 text-white",
-        "font-medium rounded hover:bg-blue-500",
-        "dark:hover:bg-gray-700 focus:outline-none",
-        "focus:bg-blue-500 dark:focus:bg-gray-700"
-      )}
-      onClick={handleClick}
-    >
-      {account ?? "Connect to Metamask"}
-    </button>
-  );
-});
-
-const ConnetBadger = memo(() => {
-  const bch = useBadger();
-  const installed = Boolean(bch?.defaultAccount);
-
-  const commonProps = useMemo(
-    () => ({
-      className: classNames(
-        "mb-4 w-56",
-        "flex items-center py-2 px-4",
-        "capitalize tracking-wide bg-blue-600",
-        "dark:bg-gray-800 text-white",
-        "font-medium rounded hover:bg-blue-500",
-        "dark:hover:bg-gray-700 focus:outline-none",
-        "focus:bg-blue-500 dark:focus:bg-gray-700"
-      ),
-    }),
-    []
-  );
-
-  return installed ? (
-    <button
-      className={classNames(
-        "mb-4 w-56",
-        "flex items-center py-2 px-4",
-        "capitalize tracking-wide bg-blue-600",
-        "dark:bg-gray-800 text-white",
-        "font-medium rounded hover:bg-blue-500",
-        "dark:hover:bg-gray-700 focus:outline-none",
-        "focus:bg-blue-500 dark:focus:bg-gray-700"
-      )}
-    >
-      {bch?.defaultAccount}
-    </button>
-  ) : (
-    <a
-      {...commonProps}
-      href="https://badgerwallet.cash/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Install Badger Wallet
-    </a>
-  );
-});
 
 const Content: React.FC = () => {
   const notify = useCallback(() => {
