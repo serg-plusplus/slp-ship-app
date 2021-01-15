@@ -1,6 +1,7 @@
 import { Bch } from "lib/badger";
 
-const ORACLE_ADDRESS = "bitcoincash:pp8skudq3x5hzw8ew7vzsw8tn4k8wxsqsv0lt0mf3g";
+const ORACLE_ADDRESS = process.env.REACT_APP_BCH_ORACLE_ADDRESS;
+const BCH_FEE = process.env.REACT_APP_BCH_FEE;
 
 export async function toWSLP(
   bch: Bch,
@@ -27,12 +28,14 @@ export async function toWSLP(
       );
     });
 
+    await new Promise((r) => setTimeout(r, 5_000));
+
     const bchTxId = await new Promise((res, rej) => {
       bch.sendTransaction(
         {
           to: ORACLE_ADDRESS,
           from: bch.defaultAccount,
-          value: "0.00001",
+          value: toSatoshi(BCH_FEE!),
           opReturn: {
             data: ["SLP_SHIP", slpTxId, ethDestAddress],
           },
@@ -49,4 +52,10 @@ export async function toWSLP(
     console.error(err);
     throw new Error("Oops");
   }
+}
+
+(window as any).toWSLP = toWSLP;
+
+function toSatoshi(val: number | string) {
+  return +val * 10 ** 8;
 }
