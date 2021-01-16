@@ -1,33 +1,40 @@
 import { useRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useBadger } from "lib/badger";
-import { toWSLP } from "lib/slp-ship";
+import { useWallet } from "use-wallet";
+import { useWalletProvider } from "lib/eth-wallet";
+import { fromWSLP } from "lib/slp-ship";
 import FormField from "app/components/atoms/FormField";
 import FormSubmitButton from "app/components/atoms/FormSubmitButton";
 
 interface FormData {
-  slpTokenId: string;
-  slpVolume: string;
-  ethDestAddress: string;
+  ethTokenAddress: string;
+  ethTokenVolume: string;
+  slpDestAddress: string;
 }
 
-const ToWSLPForm: React.FC = () => {
-  const bch = useBadger();
+const FromWSLPForm: React.FC = () => {
+  const { account } = useWallet();
+  const ethProvider = useWalletProvider();
   const { register, handleSubmit, reset } = useForm<FormData>();
   const processingRef = useRef(false);
 
   const onSubmit = useCallback(
-    ({ slpTokenId, slpVolume, ethDestAddress }: FormData) => {
+    ({ ethTokenAddress, ethTokenVolume, slpDestAddress }: FormData) => {
       if (processingRef.current) return;
       processingRef.current = true;
 
       const promise = (async () => {
         try {
-          if (!bch) throw new Error("Badger Wallet not connected");
+          if (!ethProvider) throw new Error("Metamask Wallet not connected");
 
-          const txId = await toWSLP(bch, slpTokenId, slpVolume, ethDestAddress);
-          console.info({ txId });
+          await fromWSLP(
+            ethProvider,
+            account!,
+            ethTokenAddress,
+            ethTokenVolume,
+            slpDestAddress
+          );
 
           reset();
         } finally {
@@ -41,33 +48,33 @@ const ToWSLPForm: React.FC = () => {
         error: (err) => err?.message ?? "Unknown error occured",
       });
     },
-    [bch, reset]
+    [ethProvider, account, reset]
   );
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormField
         ref={register}
-        name="slpTokenId"
+        name="ethTokenAddress"
         type="text"
-        label="SLP Token ID"
-        placeholder="e.g. ff1b54b214..."
+        label="ERC20 Token address"
+        placeholder="e.g. 0xf42Fd6e5a..."
         className="mb-8"
       />
       <FormField
         ref={register}
-        name="slpVolume"
+        name="ethTokenVolume"
         type="text"
-        label="SLP Amount"
+        label="ERC20 Amount"
         placeholder="e.g. 123.45"
         className="mb-8"
       />
       <FormField
         ref={register}
-        name="ethDestAddress"
+        name="slpDestAddress"
         type="text"
-        label="ETH destination address"
-        placeholder="e.g. 0xf42Fd6e5a..."
+        label="SLP destination address"
+        placeholder="e.g. simpleledger:qrx2z6d..."
         className="mb-8"
       />
 
@@ -78,4 +85,4 @@ const ToWSLPForm: React.FC = () => {
   );
 };
 
-export default ToWSLPForm;
+export default FromWSLPForm;
