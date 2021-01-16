@@ -34,7 +34,8 @@ const Connect: React.FC = () => {
               "flex items-center justify-center py-3 px-4",
               "tracking-tight",
               "text-lg font-bold rounded-md text-brand-blue",
-              "border-2 border-dashed border-brand-indigo"
+              "border-2 border-dashed border-brand-indigo",
+              "transition ease-in-out duration-300"
             )}
           />
         </div>

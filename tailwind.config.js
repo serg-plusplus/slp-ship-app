@@ -18,6 +18,9 @@ module.exports = {
         courier: ["'Courier Prime'", ...theme.fontFamily.mono],
         notosans: ["'Noto Sans TC'", ...theme.fontFamily.sans],
       },
+      zIndex: {
+        "-1": -1,
+      },
       rotate: {
         "-20": "-20deg",
       },
@@ -26,6 +29,7 @@ module.exports = {
   variants: {
     extend: {
       backgroundOpacity: ["responsive", "hover", "focus"],
+      animation: ["responsive", "motion-safe", "motion-reduce", "group-hover"],
     },
   },
   plugins: [],

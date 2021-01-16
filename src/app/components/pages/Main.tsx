@@ -78,11 +78,12 @@ const Flights: React.FC = () => {
     <div className={classNames("w-full max-w-3xl mx-auto flex flex-wrap")}>
       {ALL_FLIGHTS.map(
         ({ slug, title, description, iconUrl, rotated, active }) => (
-          <div key={slug} className="relative w-1/2 p-4">
+          <div key={slug} className="relative w-1/2 p-4 group">
             <Link
               to={`/flight/${slug}`}
               className={classNames(
-                "border-2 border-dashed border-brand-indigo",
+                "border-2 border-dashed border-brand-indigo hover:border-brand-blue",
+                "transition ease-in-out duration-300",
                 "rounded-xl",
                 "p-6",
                 "flex items-center",
@@ -93,7 +94,7 @@ const Flights: React.FC = () => {
                 src={iconUrl}
                 alt={title}
                 className={classNames(
-                  "w-16 h-auto mr-4",
+                  "w-16 h-auto mr-4 group-hover:animate-pulse",
                   rotated && "transform rotate-180 -translate-y-2"
                 )}
               />
