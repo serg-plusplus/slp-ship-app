@@ -18,10 +18,15 @@ module.exports = {
         courier: ["'Courier Prime'", ...theme.fontFamily.mono],
         notosans: ["'Noto Sans TC'", ...theme.fontFamily.sans],
       },
+      rotate: {
+        "-20": "-20deg",
+      },
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      backgroundOpacity: ["responsive", "hover", "focus"],
+    },
   },
   plugins: [],
 };

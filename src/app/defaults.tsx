@@ -6,8 +6,8 @@ import FromWSLP from "app/components/pages/FromWSLP";
 
 export const ROUTE_MAP = Router.createMap([
   ["/", () => <Main />],
-  ["/to-wslp", () => <ToWSLP />],
-  ["/from-wslp", () => <FromWSLP />],
+  ["/flight/to-wslp", () => <ToWSLP />],
+  ["/flight/from-wslp", () => <FromWSLP />],
   ["*", () => <Redirect to="/" />],
 ]);
 
