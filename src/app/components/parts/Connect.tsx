@@ -5,44 +5,42 @@ import toast from "react-hot-toast";
 import { useBadger } from "lib/badger";
 import HashShortView from "app/components/atoms/HashShortView";
 
-const Connect: React.FC = () => {
-  return (
-    <div className="flex flex-col">
-      {[
-        {
-          title: "Badger",
-          netSlug: "mainnet",
-          Component: ConnetBadger,
-        },
-        {
-          title: "Metamask",
-          netSlug: "kovan",
-          Component: ConnetMetamask,
-        },
-      ].map(({ title, netSlug, Component }, i) => (
-        <div key={i} className="mb-4 flex items-center justify-end">
-          <div className={classNames("mr-4", "flex flex-col items-end")}>
-            <span className="text-brand-indigo">{title}</span>
-            <span className="font-courier text-brand-darkgray text-xs uppercase">
-              {netSlug}
-            </span>
-          </div>
-
-          <Component
-            className={classNames(
-              "w-64",
-              "flex items-center justify-center py-3 px-4",
-              "tracking-tight",
-              "text-lg font-bold rounded-md text-brand-blue",
-              "border-2 border-dashed border-brand-indigo",
-              "transition ease-in-out duration-300"
-            )}
-          />
+const Connect: React.FC = () => (
+  <div className="flex flex-col">
+    {[
+      {
+        title: "Badger",
+        netSlug: "mainnet",
+        Component: ConnetBadger,
+      },
+      {
+        title: "Metamask",
+        netSlug: "kovan",
+        Component: ConnetMetamask,
+      },
+    ].map(({ title, netSlug, Component }, i) => (
+      <div key={i} className="mb-4 flex items-center justify-end">
+        <div className={classNames("mr-4", "flex flex-col items-end")}>
+          <span className="text-brand-indigo">{title}</span>
+          <span className="font-courier text-brand-darkgray text-xs uppercase">
+            {netSlug}
+          </span>
         </div>
-      ))}
-    </div>
-  );
-};
+
+        <Component
+          className={classNames(
+            "w-64",
+            "flex items-center justify-center py-3 px-4",
+            "tracking-tight",
+            "text-lg font-bold rounded-md text-brand-blue",
+            "border-2 border-dashed border-brand-indigo",
+            "transition ease-in-out duration-300"
+          )}
+        />
+      </div>
+    ))}
+  </div>
+);
 
 export default Connect;
 

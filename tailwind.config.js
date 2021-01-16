@@ -11,6 +11,7 @@ module.exports = {
           indigo: "#74328E",
           black: "#1D1D1B",
           blue: "#53C9FB",
+          pink: "#FF5079",
           darkgray: "#707070",
         },
       },
@@ -55,7 +56,13 @@ module.exports = {
   variants: {
     extend: {
       backgroundOpacity: ["responsive", "hover", "focus"],
-      animation: ["responsive", "motion-safe", "motion-reduce", "group-hover"],
+      animation: [
+        "responsive",
+        "motion-safe",
+        "motion-reduce",
+        "hover",
+        "group-hover",
+      ],
     },
   },
   plugins: [],

@@ -1,17 +1,22 @@
 import PageLayout from "app/components/layout/PageLayout";
+import FormBox from "app/components/layout/FormBox";
+import ToWSLPForm from "app/components/parts/ToWSLPForm";
 
 const ToWSLP: React.FC = () => (
   <PageLayout
-    title="To ERC20Burg"
+    title="SLP - ERC20 Route"
     description={
       <>
-        Lock native SLP
-        <br />
-        and Mint WSLP (ERC20)
+        Give your tokens trip to the
+        <br /> first smart-contract platform
+        <br /> and one of the most overloaded
+        <br /> networks.
       </>
     }
   >
-    KEK
+    <FormBox className="my-12">
+      <ToWSLPForm />
+    </FormBox>
   </PageLayout>
 );
 

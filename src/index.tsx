@@ -5,7 +5,6 @@ import { StrictMode } from "react";
 import { disableOutlinesForClick } from "lib/outline-on-click";
 import App from "app/components/App";
 import reportWebVitals from "./reportWebVitals";
-import "lib/slp-ship";
 
 ReactDOM.render(
   <StrictMode>

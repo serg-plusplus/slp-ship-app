@@ -17,7 +17,8 @@ const Main: React.FC = () => {
         <>
           Stuck at home due to Covid?
           <br />
-          Let your money cross the boards!
+          Let your money cross the
+          <br /> boards!
         </>
       }
     >
@@ -73,87 +74,89 @@ const ALL_FLIGHTS = [
   },
 ];
 
-const Flights: React.FC = () => {
-  return (
-    <div className={classNames("w-full max-w-3xl mx-auto flex flex-wrap")}>
-      {ALL_FLIGHTS.map(
-        ({ slug, title, description, iconUrl, rotated, active }) => (
-          <div key={slug} className="relative w-1/2 p-4 group">
-            <Link
-              to={`/flight/${slug}`}
+const Flights: React.FC = () => (
+  <div className={classNames("w-full max-w-3xl mx-auto flex flex-wrap")}>
+    {ALL_FLIGHTS.map(
+      ({ slug, title, description, iconUrl, rotated, active }) => (
+        <div key={slug} className="relative w-1/2 p-4 group">
+          <Link
+            to={`/flight/${slug}`}
+            className={classNames(
+              "border-2 border-dashed border-brand-indigo hover:border-brand-blue",
+              "transition ease-in-out duration-300",
+              "rounded-xl",
+              "p-6",
+              "flex items-center",
+              !active && "pointer-events-none opacity-25"
+            )}
+          >
+            <div
               className={classNames(
-                "border-2 border-dashed border-brand-indigo hover:border-brand-blue",
-                "transition ease-in-out duration-300",
-                "rounded-xl",
-                "p-6",
-                "flex items-center",
-                !active && "pointer-events-none opacity-25"
-              )}
-            >
-              <div
-                className={classNames(
-                  "mr-4",
-                  rotated
+                "mr-4 w-16 flex justify-center",
+                active &&
+                  (rotated
                     ? "group-hover:animate-bouncebottom"
-                    : "group-hover:animate-bouncetop"
+                    : "group-hover:animate-bouncetop")
+              )}
+              style={{ minHeight: "6rem" }}
+            >
+              <img
+                src={iconUrl}
+                alt={title}
+                className={classNames(
+                  "w-16 h-auto",
+                  rotated && "transform rotate-180 -translate-y-2"
+                )}
+              />
+            </div>
+
+            <div className="flex-1 flex flex-col items-center text-center">
+              <h3
+                className={classNames(
+                  "mb-2",
+                  "text-brand-indigo",
+                  "text-lg",
+                  "font-bold",
+                  "uppercase tracking-tight",
+                  "transition ease-in-out duration-300",
+                  active && "group-hover:text-brand-blue"
                 )}
               >
-                <img
-                  src={iconUrl}
-                  alt={title}
-                  className={classNames(
-                    "w-16 h-auto",
-                    rotated && "transform rotate-180 -translate-y-2"
-                  )}
-                />
-              </div>
+                {title}
+              </h3>
 
-              <div className="flex-1 flex flex-col items-center text-center">
-                <h3
-                  className={classNames(
-                    "mb-2",
-                    "text-brand-indigo",
-                    "text-lg",
-                    "font-bold",
-                    "uppercase tracking-tight"
-                  )}
-                >
-                  {title}
-                </h3>
+              <p
+                className={classNames(
+                  "font-courier",
+                  "text-base",
+                  "text-brand-darkgray"
+                )}
+              >
+                {description}
+              </p>
+            </div>
+          </Link>
 
-                <p
-                  className={classNames(
-                    "font-courier",
-                    "text-base",
-                    "text-brand-darkgray"
-                  )}
-                >
-                  {description}
-                </p>
-              </div>
-            </Link>
-
-            {!active && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <p
-                  className={classNames(
-                    "text-brand-blue",
-                    "text-xl",
-                    "font-bold",
-                    "uppercase tracking-tight",
-                    "transform -rotate-20"
-                  )}
-                >
-                  Coming soon
-                </p>
-              </div>
-            )}
-          </div>
-        )
-      )}
-    </div>
-  );
-};
+          {!active && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p
+                className={classNames(
+                  "text-brand-darkgray opacity-75",
+                  "text-xl",
+                  "font-bold",
+                  "uppercase tracking-tight",
+                  "transform -rotate-20"
+                )}
+              >
+                Coming soon
+              </p>
+            </div>
+          )}
+        </div>
+      )
+    )}
+  </div>
+);
 
 const Content: React.FC = () => {
   const notify = useCallback(() => {

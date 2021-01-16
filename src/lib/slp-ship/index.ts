@@ -1,4 +1,5 @@
 import { Bch } from "lib/badger";
+import { ethers } from "ethers";
 
 const ORACLE_ADDRESS = process.env.REACT_APP_BCH_ORACLE_ADDRESS;
 const BCH_FEE = process.env.REACT_APP_BCH_FEE;
@@ -9,6 +10,16 @@ export async function toWSLP(
   slpVolume: string,
   ethDestAddress: string
 ) {
+  if (!slpTokenId) {
+    throw new Error("Invalid SLP Token ID");
+  }
+  if (!(+slpVolume > 0)) {
+    throw new Error("Invalid SLP Amount");
+  }
+  if (!ethers.utils.isAddress(ethDestAddress)) {
+    throw new Error("Invalid Ethereum address");
+  }
+
   try {
     const slpTxId = await new Promise((res, rej) => {
       bch.sendTransaction(
@@ -50,7 +61,7 @@ export async function toWSLP(
     return bchTxId;
   } catch (err) {
     console.error(err);
-    throw new Error("Oops");
+    throw new Error("Oops! Something went wrong ;(");
   }
 }
 

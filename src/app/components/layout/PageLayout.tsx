@@ -1,4 +1,5 @@
 import classNames from "clsx";
+import { Link } from "woozie";
 import ContentContainer from "app/components/layout/ContentContainer";
 import Connect from "app/components/parts/Connect";
 import { ReactComponent as Image2 } from "app/misc/2.svg";
@@ -18,14 +19,16 @@ const PageLayout: React.FC<PageLayoutProps> = ({
 }) => (
   <ContentContainer className="relative">
     <header className="flex items-center py-8">
-      <Image2 />
+      <Link to="/">
+        <Image2 />
+      </Link>
       <div className="flex-1" />
       <Connect />
     </header>
 
     <main className="-mt-12">
       <div className="w-full flex flex-col items-center">
-        <div className="max-w-xs text-center">
+        <div className="max-w-sm text-center">
           <h1
             className={classNames(
               "mb-6",
