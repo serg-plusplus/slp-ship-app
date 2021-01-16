@@ -1,8 +1,10 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, Suspense, memo } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useQuery } from "react-query";
 import { useBadger } from "lib/badger";
-import { toWSLP } from "lib/slp-ship";
+import { toWSLP, getSLPBalance } from "lib/slp-ship";
+import ErrBond from "app/components/a11y/ErrBond";
 import FormField from "app/components/atoms/FormField";
 import FormSubmitButton from "app/components/atoms/FormSubmitButton";
 
@@ -53,7 +55,14 @@ const ToWSLPForm: React.FC = () => {
         label="SLP Token ID"
         placeholder="e.g. ff1b54b214..."
         className="mb-8"
+        list="user-slp-tokens"
       />
+      <ErrBond>
+        <Suspense fallback={null}>
+          <AllUserSLPTokens listId="user-slp-tokens" />
+        </Suspense>
+      </ErrBond>
+
       <FormField
         ref={register}
         name="slpVolume"
@@ -79,3 +88,34 @@ const ToWSLPForm: React.FC = () => {
 };
 
 export default ToWSLPForm;
+
+type AllUserSLPTokensProps = {
+  listId: string;
+};
+
+const AllUserSLPTokens = memo<AllUserSLPTokensProps>(({ listId }) => {
+  const bch = useBadger();
+  const fetchAllTokens = useCallback(async () => {
+    if (!bch) return [];
+    try {
+      const all = await getSLPBalance(bch.defaultAccount);
+      return all as any[];
+    } catch {
+      return [];
+    }
+  }, [bch]);
+  const { data: allTokens } = useQuery(
+    ["all-slps", { account: bch?.defaultAccount }],
+    fetchAllTokens
+  );
+
+  return (
+    <datalist id={listId}>
+      {allTokens!.map(({ tokenId, balance, tokenTicker, tokenName }) => (
+        <option key={tokenId} value={tokenId}>
+          {balance} {tokenTicker} {tokenName}
+        </option>
+      ))}
+    </datalist>
+  );
+});

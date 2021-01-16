@@ -8,10 +8,11 @@ import BigNumber from "bignumber.js";
 import { Bch } from "lib/badger";
 import { ensureAllowance } from "./erc20";
 import wslpabi from "./wslpabi.json";
-// import factoryabi from "./factoryabi.json";
+import factoryabi from "./factoryabi.json";
 
 const ORACLE_ADDRESS = process.env.REACT_APP_BCH_ORACLE_ADDRESS;
 const BCH_FEE = process.env.REACT_APP_BCH_FEE;
+const ETH_FACTORY_ADDRESS = process.env.REACT_APP_ETH_FACTORY_ADDRESS!;
 
 (window as any).toWSLP = toWSLP;
 
@@ -110,6 +111,64 @@ export async function fromWSLP(
   } catch (err) {
     console.error(err);
     throw new Error("Oops! Something went wrong ;(");
+  }
+}
+
+export async function getAllWSLPTokens(provider: providers.Web3Provider) {
+  const factory = new Contract(
+    ETH_FACTORY_ADDRESS,
+    factoryabi,
+    provider.getSigner()
+  );
+  const size: number = await factory.allPairsLength();
+  const allWslps: string[] = await Promise.all(
+    Array.from({ length: size }).map((_, i) => factory.allTokens(i))
+  );
+  return Promise.all(
+    allWslps.map(async (address) => {
+      const wslp = new Contract(address, wslpabi, provider.getSigner());
+      const [symbol, name]: [string, string] = await Promise.all([
+        wslp.symbol(),
+        wslp.name(),
+      ]);
+      return {
+        address,
+        symbol,
+        name,
+      };
+    })
+  );
+}
+
+export const bchjs = new (window as any).BchJS({
+  restURL: "https://api.fullstack.cash/v3/",
+  apiToken:
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmNTU1OWExY2U1MjBmMDAxOTA3ZDcyMyIsImVtYWlsIjoiYml0b2Zmb2dAZ21haWwuY29tIiwiYXBpTGV2ZWwiOjAsInJhdGVMaW1pdCI6MywiaWF0IjoxNTk5NDI5MDQ5LCJleHAiOjE2MDIwMjEwNDl9.NekXZiTIaQOWdtdoJkDa_U8fcW2q4W3RRC_F618TND8",
+});
+
+export async function getSLPBalance(cashAddress: string) {
+  try {
+    const data = await bchjs.Electrumx.utxo(cashAddress);
+    const utxos = data.utxos;
+
+    let allUtxos = await bchjs.SLP.Utils.tokenUtxoDetails(utxos);
+    let tokens: any = {};
+    allUtxos.forEach((utxo: any) => {
+      if (utxo && utxo.utxoType === "token") {
+        tokens[utxo.tokenId] = tokens[utxo.tokenId] || {
+          tokenId: utxo.tokenId,
+          balance: 0,
+          slpAddress: bchjs.SLP.Address.toSLPAddress(cashAddress),
+          decimalCount: utxo.decimals,
+          tokenTicker: utxo.tokenTicker,
+          tokenName: utxo.tokenName,
+        };
+        tokens[utxo.tokenId].balance += utxo.tokenQty;
+      }
+    });
+    return Object.values(tokens);
+  } catch (err) {
+    throw err;
   }
 }
 

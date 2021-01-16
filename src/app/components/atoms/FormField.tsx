@@ -50,6 +50,7 @@ const FormField = forwardRef<FormFieldRef, FormFieldProps>(
             "transition ease-in-out duration-300",
             className
           )}
+          spellCheck={false}
           {...rest}
         />
       </div>
