@@ -90,14 +90,23 @@ const Flights: React.FC = () => {
                 !active && "pointer-events-none opacity-25"
               )}
             >
-              <img
-                src={iconUrl}
-                alt={title}
+              <div
                 className={classNames(
-                  "w-16 h-auto mr-4 group-hover:animate-pulse",
-                  rotated && "transform rotate-180 -translate-y-2"
+                  "mr-4",
+                  rotated
+                    ? "group-hover:animate-bouncebottom"
+                    : "group-hover:animate-bouncetop"
                 )}
-              />
+              >
+                <img
+                  src={iconUrl}
+                  alt={title}
+                  className={classNames(
+                    "w-16 h-auto",
+                    rotated && "transform rotate-180 -translate-y-2"
+                  )}
+                />
+              </div>
 
               <div className="flex-1 flex flex-col items-center text-center">
                 <h3
