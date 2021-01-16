@@ -1,33 +1,27 @@
-import { useCallback, useMemo } from "react";
 import classNames from "clsx";
 import { Link } from "woozie";
-import toast from "react-hot-toast";
-import { useLiveQuery } from "dexie-react-hooks";
-import * as Repo from "app/repo";
 import PageLayout from "app/components/layout/PageLayout";
 import iconUrl1 from "app/misc/1.svg";
 import iconUrl39 from "app/misc/39.svg";
 import iconUrl117 from "app/misc/117.svg";
 
-const Main: React.FC = () => {
-  return (
-    <PageLayout
-      title="All flights"
-      description={
-        <>
-          Stuck at home due to Covid?
-          <br />
-          Let your money cross the
-          <br /> boards!
-        </>
-      }
-    >
-      <div className="py-8">
-        <Flights />
-      </div>
-    </PageLayout>
-  );
-};
+const Main: React.FC = () => (
+  <PageLayout
+    title="All flights"
+    description={
+      <>
+        Stuck at home due to Covid?
+        <br />
+        Let your money cross the
+        <br /> boards!
+      </>
+    }
+  >
+    <div className="py-8">
+      <Flights />
+    </div>
+  </PageLayout>
+);
 
 export default Main;
 
@@ -157,62 +151,3 @@ const Flights: React.FC = () => (
     )}
   </div>
 );
-
-const Content: React.FC = () => {
-  const notify = useCallback(() => {
-    const promise = (async () => {
-      const allContacts = await Repo.contacts.toArray();
-      console.info(allContacts);
-      return allContacts.length;
-    })();
-
-    toast.promise(promise, {
-      loading: "Loading",
-      success: (contractsCount) => `Posts count: ${contractsCount}`,
-      error: (err) => `Error when fetching: ${err?.message ?? "unknown"}`,
-    });
-  }, []);
-
-  const addPost = useCallback(() => {
-    const promise = (async () => {
-      await Repo.contacts.add({
-        first: `${Math.random()}`,
-        last: "Last name",
-      });
-    })();
-
-    toast.promise(promise, {
-      loading: "Adding post...",
-      success: "Post added!",
-      error: (err) => `Error when adding: ${err?.message ?? "unknown"}`,
-    });
-  }, []);
-
-  return (
-    <div>
-      <button onClick={notify}>Make me a toast</button>
-      <br />
-      <button onClick={addPost}>Add post</button>
-
-      <ContactList />
-    </div>
-  );
-};
-
-const ContactList: React.FC = () => {
-  const contacts = useLiveQuery(() =>
-    Repo.contacts.reverse().limit(10).toArray()
-  );
-
-  return useMemo(() => {
-    return contacts ? (
-      <>
-        {contacts.map(({ id, first, last }) => (
-          <div key={id} className="px-2 text-semibold">
-            {first}: {last}
-          </div>
-        ))}
-      </>
-    ) : null;
-  }, [contacts]);
-};
