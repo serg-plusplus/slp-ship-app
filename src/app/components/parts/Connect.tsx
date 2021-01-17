@@ -54,7 +54,12 @@ const ConnetMetamask = memo<{ className?: string }>(({ className }) => {
     if (connectingRef.current) return;
     connectingRef.current = true;
 
-    const promise = connect("injected").finally(() => {
+    const promise = (async () => {
+      if (!("web3" in window)) {
+        throw new Error("Metamask not installed");
+      }
+      return connect("injected");
+    })().finally(() => {
       connectingRef.current = false;
     });
 
