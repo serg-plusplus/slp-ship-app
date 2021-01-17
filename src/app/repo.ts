@@ -1,18 +1,20 @@
 import Dexie from "dexie";
 
 export enum Table {
-  CONTRACTS = "contacts",
+  WSLPTOKENS = "wslptokens",
 }
 
 export const db = new Dexie("MyAppDatabase");
 db.version(1).stores({
-  [Table.CONTRACTS]: "++id, first, last",
+  [Table.WSLPTOKENS]: "++id, &slpId, &wslpAddress, symbol, name",
 });
 
-export const contacts = db.table<IContact, number>(Table.CONTRACTS);
+export const wslpTokens = db.table<IWSLP, number>(Table.WSLPTOKENS);
 
-export interface IContact {
+export interface IWSLP {
   id?: number;
-  first: string;
-  last: string;
+  slpId: string;
+  wslpAddress: string;
+  symbol: string;
+  name: string;
 }

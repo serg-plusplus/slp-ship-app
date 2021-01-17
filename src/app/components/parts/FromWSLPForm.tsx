@@ -1,13 +1,15 @@
-import { useRef, useCallback, memo, Suspense } from "react";
+import { useRef, useCallback, memo, Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useWallet } from "use-wallet";
 import { useQuery } from "react-query";
 import { useWalletProvider } from "lib/eth-wallet";
-import { fromWSLP, getAllWSLPTokens } from "lib/slp-ship";
+import { fromWSLP, getLatestWSLPTokens } from "lib/slp-ship";
+import { getBalance } from "lib/slp-ship/erc20";
 import ErrBond from "app/components/a11y/ErrBond";
 import FormField from "app/components/atoms/FormField";
 import FormSubmitButton from "app/components/atoms/FormSubmitButton";
+import { ethers } from "ethers";
 
 interface FormData {
   ethTokenAddress: string;
@@ -53,6 +55,15 @@ const FromWSLPForm: React.FC = () => {
     [ethProvider, account, reset]
   );
 
+  const [latestEthTokenAddress, setLatestEthTokenAddress] = useState("");
+
+  const handleETHTokenAddressChange = useCallback(
+    (evt) => {
+      setLatestEthTokenAddress(evt.target.value);
+    },
+    [setLatestEthTokenAddress]
+  );
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormField
@@ -63,12 +74,25 @@ const FromWSLPForm: React.FC = () => {
         placeholder="e.g. 0xf42Fd6e5a..."
         className="mb-8"
         list="wslp-tokens"
+        onChange={handleETHTokenAddressChange}
       />
       <ErrBond>
         <Suspense fallback={null}>
           <AllWSLPTokens listId="wslp-tokens" />
         </Suspense>
       </ErrBond>
+
+      {ethers.utils.isAddress(latestEthTokenAddress) ? (
+        <div className="-mt-4 mb-6 flex items-start">
+          <div className="mr-2 font-courier text-brand-darkgray text-lg leading-none">
+            Balance:
+          </div>
+
+          <span className="leading-none">
+            <ERC20Balance address={latestEthTokenAddress} />
+          </span>
+        </div>
+      ) : null}
 
       <FormField
         ref={register}
@@ -106,7 +130,7 @@ const AllWSLPTokens = memo<AllWSLPTokensProps>(({ listId }) => {
   const fetchAllTokens = useCallback(async () => {
     if (!provider) return [];
     try {
-      return getAllWSLPTokens(provider);
+      return getLatestWSLPTokens(provider);
     } catch {
       return [];
     }
@@ -126,3 +150,28 @@ const AllWSLPTokens = memo<AllWSLPTokensProps>(({ listId }) => {
     </datalist>
   );
 });
+
+const ERC20Balance: React.FC<{ address: string }> = ({ address }) => {
+  const provider = useWalletProvider();
+  const { account } = useWallet();
+
+  const providerExists = Boolean(provider);
+  const fetchAllTokens = useCallback(async () => {
+    if (!provider || !account) return null;
+    try {
+      return getBalance(provider, account, address);
+    } catch {
+      return null;
+    }
+  }, [provider, account, address]);
+  const { data: balance, isFetching } = useQuery(
+    ["erc20-balabce", { providerExists, account }],
+    fetchAllTokens,
+    {
+      suspense: false,
+      refetchInterval: 20_000,
+    }
+  );
+
+  return <>{isFetching ? "..." : balance || null}</>;
+};

@@ -2,6 +2,7 @@ import classNames from "clsx";
 import { Link } from "woozie";
 import ContentContainer from "app/components/layout/ContentContainer";
 import Connect from "app/components/parts/Connect";
+import AllTokens from "app/components/parts/AllTokens";
 import { ReactComponent as Image2 } from "app/misc/2.svg";
 import imageUrl137 from "app/misc/137.svg";
 import imageUrl143 from "app/misc/143.svg";
@@ -53,6 +54,8 @@ const PageLayout: React.FC<PageLayoutProps> = ({
       </div>
 
       {children}
+
+      <AllTokens />
     </main>
 
     <img src={imageUrl137} alt="" className="absolute left-32 top-32 -z-1" />

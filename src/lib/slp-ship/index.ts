@@ -103,7 +103,7 @@ export async function fromWSLP(
     const tokenDecimals = await wslp.decimals();
     const volume = new BigNumber(ethTokenVolume)
       .times(10 ** tokenDecimals)
-      .integerValue();
+      .integerValue(BigNumber.ROUND_DOWN);
 
     await ensureAllowance(provider, account, account, ethTokenAddress, volume);
 
@@ -114,25 +114,29 @@ export async function fromWSLP(
   }
 }
 
-export async function getAllWSLPTokens(provider: providers.Web3Provider) {
+export async function getLatestWSLPTokens(provider: providers.Web3Provider) {
   const factory = new Contract(
     ETH_FACTORY_ADDRESS,
     factoryabi,
     provider.getSigner()
   );
-  const size: number = await factory.allPairsLength();
-  const allWslps: string[] = await Promise.all(
-    Array.from({ length: size }).map((_, i) => factory.allTokens(i))
+  const allPairs: number = await factory.allPairsLength();
+  const size = Math.min(allPairs, 20);
+  const allSlps: string[] = await Promise.all(
+    Array.from({ length: size }).map((_, i) => factory.allSlp(allPairs - i - 1))
   );
   return Promise.all(
-    allWslps.map(async (address) => {
+    allSlps.map(async (slpId) => {
+      const address = await factory.getErc20(slpId);
       const wslp = new Contract(address, wslpabi, provider.getSigner());
       const [symbol, name]: [string, string] = await Promise.all([
         wslp.symbol(),
         wslp.name(),
       ]);
+
       return {
         address,
+        slpId,
         symbol,
         name,
       };
@@ -173,5 +177,8 @@ export async function getSLPBalance(cashAddress: string) {
 }
 
 function toSatoshi(val: number | string) {
-  return +val * 10 ** 8;
+  return new BigNumber(val)
+    .times(10 ** 8)
+    .integerValue(BigNumber.ROUND_DOWN)
+    .toString();
 }

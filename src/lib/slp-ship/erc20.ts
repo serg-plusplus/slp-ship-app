@@ -1,6 +1,39 @@
-import { Contract, providers, BigNumber as EthersBigNumber } from "ethers";
+import {
+  Contract,
+  providers,
+  BigNumber as EthersBigNumber,
+  ethers,
+} from "ethers";
 import BigNumber from "bignumber.js";
 import erc20Abi from "./erc20abi.json";
+
+export async function getBalance(
+  provider: providers.Web3Provider,
+  account: string,
+  tokenAddress: string
+) {
+  if (!account || !provider) {
+    throw new Error("You need to login to get balance");
+  }
+
+  if (
+    !ethers.utils.isAddress(account) ||
+    !ethers.utils.isAddress(tokenAddress)
+  ) {
+    throw new Error("Invalid Ethereum address");
+  }
+
+  const erc20Contract = new Contract(
+    tokenAddress,
+    erc20Abi,
+    provider.getSigner()
+  );
+
+  const decimals = await erc20Contract.decimals();
+
+  const balance: EthersBigNumber = await erc20Contract.balanceOf(account);
+  return new BigNumber(balance.toString()).div(10 ** decimals).toString();
+}
 
 export async function ensureAllowance(
   provider: providers.Web3Provider,
