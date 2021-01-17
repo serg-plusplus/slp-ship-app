@@ -32,6 +32,7 @@ const ALL_FLIGHTS = [
     description: "Lock native SLP and Mint WSLP (ERC20)",
     iconUrl: iconUrl1,
     rotated: false,
+    minHeight: "8.75rem",
     active: true,
   },
   {
@@ -40,6 +41,7 @@ const ALL_FLIGHTS = [
     description: "Burn WSLP (ERC20) and Unlock native SLP",
     iconUrl: iconUrl1,
     rotated: true,
+    minHeight: "8.75rem",
     active: true,
   },
   {
@@ -48,6 +50,7 @@ const ALL_FLIGHTS = [
     description: "Lock ERC20 and Mint WERC20 (SLP)",
     iconUrl: iconUrl39,
     rotated: false,
+    minHeight: "7.875rem",
     active: false,
   },
   {
@@ -56,6 +59,7 @@ const ALL_FLIGHTS = [
     description: "Burn WERC20 (SLP) and Unlock ERC20",
     iconUrl: iconUrl39,
     rotated: true,
+    minHeight: "7.875rem",
     active: false,
   },
   {
@@ -64,6 +68,7 @@ const ALL_FLIGHTS = [
     description: "Cancel the flight",
     iconUrl: iconUrl117,
     rotated: false,
+    minHeight: "6rem",
     active: false,
   },
 ];
@@ -71,7 +76,7 @@ const ALL_FLIGHTS = [
 const Flights: React.FC = () => (
   <div className={classNames("w-full max-w-3xl mx-auto flex flex-wrap")}>
     {ALL_FLIGHTS.map(
-      ({ slug, title, description, iconUrl, rotated, active }) => (
+      ({ slug, title, description, iconUrl, rotated, minHeight, active }) => (
         <div key={slug} className="relative w-1/2 p-4 group">
           <Link
             to={`/flight/${slug}`}
@@ -92,7 +97,7 @@ const Flights: React.FC = () => (
                     ? "group-hover:animate-bouncebottom"
                     : "group-hover:animate-bouncetop")
               )}
-              style={{ minHeight: "6rem" }}
+              style={{ minHeight }}
             >
               <img
                 src={iconUrl}
