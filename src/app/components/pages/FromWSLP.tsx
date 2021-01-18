@@ -7,10 +7,8 @@ const ToWSLP: React.FC = () => (
     title="WSLP (ERC20) - SLP Route"
     description={
       <>
-        Give your WSLP tokens
-        <br /> bla bla-bla
-        <br /> bla bla-bla
-        <br /> bla.
+        Return SLP tokens
+        <br /> to the base
       </>
     }
   >
