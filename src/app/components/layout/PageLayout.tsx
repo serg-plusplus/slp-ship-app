@@ -58,7 +58,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
       <AllTokens />
     </main>
 
-    <img src={imageUrl137} alt="" className="absolute left-32 top-32 -z-1" />
+    <img src={imageUrl137} alt="" className="absolute left-16 top-36 -z-1" />
     <img src={imageUrl143} alt="" className="absolute right-32 top-56 -z-1" />
     <img
       src={imageUrl129}

@@ -4,7 +4,7 @@ import FromWSLPForm from "app/components/parts/FromWSLPForm";
 
 const ToWSLP: React.FC = () => (
   <PageLayout
-    title="ERC20 - SLP Route"
+    title="WSLP (ERC20) - SLP Route"
     description={
       <>
         Give your WSLP tokens
